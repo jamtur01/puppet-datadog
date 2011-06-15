@@ -1,0 +1,5 @@
+name 'puppet-cloudwatch'
+version '0.0.1'
+license 'Apache 2.0'
+summary 'Report processor that sends metrics to AWS CloudWatch'
+project_page 'https://github.com/jamtur01/puppet-cloudwatch'
