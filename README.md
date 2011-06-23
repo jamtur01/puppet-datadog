@@ -9,7 +9,7 @@ A Puppet report processor for sending metrics to [Amazon datadog](http://aws.ama
 Requirements
 ------------
 
-* `dogapi` gem
+* `dogapi` gem (v 1.0.3 and later)
 * `Puppet`
 * A DataDog account
 
