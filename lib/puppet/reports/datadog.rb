@@ -20,14 +20,24 @@ Puppet::Reports.register_report(:datadog) do
   DESC
 
   def process
-    Puppet.debug "Sending metrics for #{self.host} to DataDog"
+    @status = self.status
+    @msg_host = self.host
+
+    Puppet.debug "Sending metrics for #{@msg_host} to DataDog"
+    @dog = Dogapi::Client.new(API_KEY, 'https://app.datadoghq.com/')
     self.metrics.each { |metric,data|
       data.values.each { |val|
-        name = "Puppet #{val[1]} #{metric}"
+        name = "puppet.#{val[1].gsub(/ /, '_')}.#{metric}".downcase
         value = val[2]
-        dog = Dogapi::Client.new(API_KEY, 'https://app.datadoghq.com/')
-        dog.emit_point("#{name}", value, :host => "#{self.host}")
+        @dog.emit_point("#{name}", value, :host => "#{@msg_host}")
       }
     }
+
+    Puppet.debug "Sending events for #{@msg_host} to DataDog"
+    output = []
+    self.logs.each do |log|
+      output << log
+    end
+    Dogapi::EventService.new('https://app.datadoghq.com').submit(API_KEY, Dogapi::Event.new(output.join("\n"), :msg_title => "Puppet run on #{@msg_host} (status: #{@status})", :event_type => 'Puppet'))
   end
 end
