@@ -4,8 +4,7 @@ puppet-datadog
 Description
 -----------
 
-A Puppet report processor for sending metrics to [Amazon datadog](http://aws.amazon.com/datadog/).
-
+A Puppet report processor for sending metrics to [Datadog](http://www.datadoghq.com/).
 Requirements
 ------------
 
