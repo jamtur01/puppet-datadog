@@ -13,7 +13,6 @@ Puppet::Reports.register_report(:datadog) do
   raise(Puppet::ParseError, "DataDog report config file #{configfile} not readable") unless File.exist?(configfile)
   config = YAML.load_file(configfile)
   API_KEY = config[:datadog_api_key]
-  ENV['DATADOG_HOST'] = 'https://app.datadoghq.com/'
 
   desc <<-DESC
   Send notification of metrics to DataDog
@@ -24,7 +23,7 @@ Puppet::Reports.register_report(:datadog) do
     @msg_host = self.host
 
     Puppet.debug "Sending metrics for #{@msg_host} to DataDog"
-    @dog = Dogapi::Client.new(API_KEY, 'https://app.datadoghq.com/')
+    @dog = Dogapi::Client.new(API_KEY)
     self.metrics.each { |metric,data|
       data.values.each { |val|
         name = "puppet.#{val[1].gsub(/ /, '_')}.#{metric}".downcase
@@ -38,6 +37,6 @@ Puppet::Reports.register_report(:datadog) do
     self.logs.each do |log|
       output << log
     end
-    Dogapi::EventService.new('https://app.datadoghq.com').submit(API_KEY, Dogapi::Event.new(output.join("\n"), :msg_title => "Puppet run on #{@msg_host} (status: #{@status})", :event_type => 'Puppet'))
+    @dog.emit_event(Dogapi::Event.new(output.join("\n"), :msg_title => "Puppet run on #{@msg_host} (status: #{@status})", :event_type => 'Puppet'))
   end
 end

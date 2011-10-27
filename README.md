@@ -5,12 +5,13 @@ Description
 -----------
 
 A Puppet report processor for sending metrics to [Datadog](http://www.datadoghq.com/).
+
 Requirements
 ------------
 
 * `dogapi` gem (v 1.0.3 and later)
 * `Puppet`
-* A DataDog account
+* A Datadog account
 
 Installation & Usage
 --------------------
